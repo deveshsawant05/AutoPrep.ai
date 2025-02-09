@@ -12,8 +12,8 @@
 ## ✨ Features  
 
 ### 1️⃣ 🖼️ Generate Questions  
-📸 **Upload an image**, and our **NLP model (TF-IDF)** will generate relevant **questions** based on the image content.  
-🧠 Helps in **quick question generation** for better **conceptual understanding**.  
+📸 **Upload an image**, and our **NLP model (TF-IDF)** will extract relevant **Previous Year Questions** based on the topic contained in image.  
+🧠 Helps in getting **quick question** for better **practice & conceptual understanding**.  
 
 ![Generate Questions Screenshot](https://drive.google.com/uc?id=148BPMTOr2M9FXRFtAdZ5I-tk6xzLKuN5)  
 
@@ -31,7 +31,7 @@
 ![Question Me Screenshot](https://drive.google.com/uc?id=18uCNzjJJ2RP2H040OR7rfA-Xz_JNrQvb)  
 
 ### 4️⃣ 🌎 Explore  
-📰 Displays the **latest education news** and updates.  
+📰 Displays the **latest edu-related news** and updates.  
 🏫 Keeps students informed about **crucial developments** in the education sector.  
 
 ![Explore Screenshot](https://drive.google.com/uc?id=1PPa0afJSiEt-6ZUmb8eVM6UcU05cmRTk)  
@@ -62,7 +62,7 @@ git clone https://github.com/yourusername/autoprep.ai.git
 
 Navigate to the project directory:  
 ~~~sh
-cd autoprep.ai
+cd autoprep.ai/Frontend
 ~~~
 
 Install dependencies:  
