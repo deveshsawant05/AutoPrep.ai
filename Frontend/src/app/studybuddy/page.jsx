@@ -15,7 +15,6 @@ import "katex/dist/katex.min.css"
 export default function StudyBuddy() {
   const [doubt, setDoubt] = useState("")
   const [response, setResponse] = useState("")
-  const [isUploading, setIsUploading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [chatHistory, setChatHistory] = useState([])
 
@@ -36,12 +35,18 @@ export default function StudyBuddy() {
       }
 
       const data = await res.json()
-      console.log("API response data:", data) // Debugging log
 
-      // Access nested "reply" key safely
       if (data?.res?.reply) {
-        setResponse(data.res.reply)
-        setChatHistory([...chatHistory, `You: ${doubt}`, `StudyBuddy: ${data.res.reply}`])
+        const formattedReply = data.res.reply
+          // Convert inline LaTeX expressions \( ... \) to $...$
+          .replace(/\\\((.*?)\\\)/g, '$$$1$')
+          // Convert block LaTeX expressions \[ ... \] to $$ ... $$
+          .replace(/\\\[(.*?)\\\]/gs, '$$\n$1\n$$')
+          // Fix subscripts (e.g., x_1 -> x_{1})
+          .replace(/(\w)_(\w+)/g, '$1_{$2}')
+        
+        setResponse(formattedReply)      
+        setChatHistory([...chatHistory, `You: ${doubt}`, `StudyBuddy: ${formattedReply}`])
       } else {
         setResponse("No response received from the API.")
       }
@@ -91,7 +96,6 @@ export default function StudyBuddy() {
             </CardContent>
           </Card>
 
-          {/* Chat Response */}
           {response && (
             <Card>
               <CardHeader>
@@ -99,46 +103,9 @@ export default function StudyBuddy() {
               </CardHeader>
               <CardContent>
                 <ReactMarkdown
-                  className="prose max-w-none"
-                  remarkPlugins={[remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
-                  components={{
-                    p: ({ children }) => <p className="mb-2">{children}</p>,
-                    code: ({ inline, className, children, ...props }) => {
-                      const content = String(children).trim();
-                      if (inline) {
-                        return <span className="text-blue-500 font-mono">{content}</span>;
-                      }
-                      return (
-                        <pre className="bg-gray-900 text-white p-2 rounded-md overflow-x-auto">
-                          <code {...props} className={className}>
-                            {content}
-                          </code>
-                        </pre>
-                      );
-                    },
-                    span: ({ children }) => {
-                      // Detect inline math expressions
-                      const content = String(children).trim();
-                      if (content.match(/^\\\(.*\\\)$/)) {
-                        return <span dangerouslySetInnerHTML={{ __html: katex.renderToString(content.slice(2, -2)) }} />;
-                      }
-                      return <span>{children}</span>;
-                    },
-                    div: ({ children }) => {
-                      // Detect block math expressions
-                      const content = String(children).trim();
-                      if (content.match(/^\\\[.*\\\]$/)) {
-                        return (
-                          <div
-                            className="text-center"
-                            dangerouslySetInnerHTML={{ __html: katex.renderToString(content.slice(2, -2), { displayMode: true }) }}
-                          />
-                        );
-                      }
-                      return <div>{children}</div>;
-                    },
-                  }}
+                  className="max-w-none"
+                    remarkPlugins={[remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
                 >
                   {response}
                 </ReactMarkdown>
@@ -146,7 +113,6 @@ export default function StudyBuddy() {
             </Card>
           )}
 
-          {/* Chat History */}
           <Card>
             <CardHeader>
               <CardTitle>Previous Conversations</CardTitle>
@@ -182,3 +148,4 @@ export default function StudyBuddy() {
     </main>
   )
 }
+

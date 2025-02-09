@@ -31,7 +31,6 @@ export async function POST(req) {
 
     const formData = await req.formData()
     const doubt = formData.get("doubt")
-    console.log("Doubt received:", doubt)
 
     if (!doubt) {
       console.error("No doubt provided.")
@@ -55,7 +54,6 @@ export async function POST(req) {
     }
 
     const data = await response.json()
-    console.log("External API response:", data)
 
     return NextResponse.json(data)
   } catch (error) {
